@@ -2,6 +2,7 @@ package photoBrowser;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
@@ -14,6 +15,7 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -22,8 +24,12 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JRadioButtonMenuItem;
+import javax.swing.JScrollPane;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
+import javax.swing.border.LineBorder;
+
+import newComponent.PhotoComponent;
 
 public class PhotoBrowser extends JFrame{
 	
@@ -45,8 +51,13 @@ public class PhotoBrowser extends JFrame{
 	JButton leftArrow;
 	JButton rightArrow;
 	
-	JPanel middleScreen;
+	ToolWindow toolWindow;
+	
+	JScrollPane scrollPane;
+	JComponent middleScreen;
 	JLabel bottomScreen = new JLabel();
+	
+	Container container;
 	
 
 	public static void main(String args[]){
@@ -56,12 +67,13 @@ public class PhotoBrowser extends JFrame{
 	
 	public PhotoBrowser(){
 		super("window");
+		container = this.getContentPane();
 		initWidget();
 		initListener();
 		pack();
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setSize(new Dimension(600,400));
-		this.setMinimumSize(new Dimension(600,400));
+		this.setSize(new Dimension(800,600));
+		this.setMinimumSize(new Dimension(800,600));
 	}
 	
 	public void initWidget(){
@@ -102,13 +114,14 @@ public class PhotoBrowser extends JFrame{
 		
 		// INIT MIDDLESCREEN *************************
 		
-		this.setLayout(new BorderLayout());
+		BorderLayout bl = new BorderLayout();
+		this.setLayout(bl);
 		
-		middleScreen = new PhotoViewer();
+		toolWindow = new ToolWindow(this.getContentPane(), bl);
+		this.add(toolWindow, BorderLayout.NORTH);
 		bottomScreen = new JLabel("status bar");
 		initToolBar();
 		
-		this.add(middleScreen, BorderLayout.CENTER);
 		this.add(bottomScreen, BorderLayout.SOUTH);
 		
 	}
@@ -167,6 +180,13 @@ public class PhotoBrowser extends JFrame{
 				bottomScreen.setText("import photo");
 				JFileChooser jfc = new JFileChooser();
 				int response = jfc.showOpenDialog(impor);
+				String path = jfc.getSelectedFile().getAbsolutePath();
+				middleScreen = new PhotoComponent(path);
+				scrollPane = new JScrollPane(middleScreen);
+				scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+				scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+				add(scrollPane, BorderLayout.CENTER);
+				revalidate();
 			}
 		});
 		
@@ -174,6 +194,7 @@ public class PhotoBrowser extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				bottomScreen.setText("photo deleted");
+				if ( middleScreen != null){ remove(scrollPane);}
 			}
 		});
 		
@@ -181,32 +202,30 @@ public class PhotoBrowser extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				bottomScreen.setText("now in photo mode");
-				remove(middleScreen);
-				middleScreen = new PhotoViewer();
-				add(middleScreen, BorderLayout.CENTER);
-				revalidate();
+				//remove(middleScreen);
+				//revalidate();
 			}
 		});
 		
 		browser.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				bottomScreen.setText("now in browser mode");
+				/*bottomScreen.setText("now in browser mode");
 				remove(middleScreen);
 				middleScreen = new Browser(3,3);
 				add(middleScreen, BorderLayout.CENTER);
-				revalidate();
+				revalidate();*/
 			}
 		});
 		
 		split.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				bottomScreen.setText("now in split mode");
+				/*bottomScreen.setText("now in split mode");
 				remove(middleScreen);
 				middleScreen = new SplitMode();
 				add(middleScreen, BorderLayout.CENTER);
-				revalidate();
+				revalidate();*/
 			}
 		});
 		

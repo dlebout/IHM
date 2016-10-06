@@ -4,11 +4,13 @@ import java.awt.Color;
 
 import javax.swing.JPanel;
 
+import newComponent.PhotoComponent;
+
 public class PhotoViewer extends JPanel {
 	
 	public PhotoViewer(){
 		super();
-		this.setBackground(Color.BLUE);
+		this.add(new PhotoComponent("./pays.png"));
 	}
 
 }
